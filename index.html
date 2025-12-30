@@ -90,6 +90,17 @@
             transform: translateX(50px);
         }
 
+        /* Floating Icon Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .float-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+
         /* Marquee */
         @keyframes marquee {
             0% {
@@ -378,15 +389,15 @@
                     Download Resume
                 </a>
 
-                <div class="">
-                    <i class="fa-brands fa-node absolute top-36 left-16 text-5xl text-green-500 z-10 opacity-70"></i>
-                    <i class="fa-brands fa-docker absolute top-36 right-16 text-5xl text-blue-500 z-10 opacity-70"></i>
-                    <i class="fa-brands fa-react absolute bottom-32 left-20 text-5xl text-blue-400 z-10 opacity-70"></i>
-                    <i class="fa-brands fa-google absolute top-1/4 left-1/4 text-5xl text-red-500 z-10 opacity-70"></i>
-                    <i class="fa-brands fa-aws absolute bottom-1/4 right-1/4 text-5xl text-orange-400 z-10 opacity-70"></i>
-                    <i class="fa-solid fa-server absolute top-1/4 right-1 text-5xl text-purple-600 z-10 opacity-70"></i>
-                    <i class="fa-solid fa-database absolute bottom-20 right-10 text-5xl text-slate-400 z-10 opacity-70"></i>
-                    <i class="fa-brands fa-linux absolute bottom-1/3 left-10 text-5xl text-yellow-500 z-10 opacity-70"></i>
+                <div class="bsolute inset-0 z-0">
+                    <i class="float-anim fa-brands fa-node absolute top-[15%] left-[8%] text-5xl text-green-500 opacity-50" style="animation-delay: 0s;"></i>
+                    <i class="float-anim fa-brands fa-docker absolute top-[20%] right-[10%] text-5xl text-blue-500 opacity-50" style="animation-delay: -2s;"></i>
+                    <i class="float-anim fa-brands fa-react absolute bottom-[18%] left-[12%] text-5xl text-blue-400 opacity-50" style="animation-delay: -4s;"></i>
+                    <i class="float-anim fa-brands fa-google absolute top-[35%] left-[22%] text-5xl text-red-500 opacity-50" style="animation-delay: -1s;"></i>
+                    <i class="float-anim fa-brands fa-aws absolute bottom-[30%] right-[20%] text-5xl text-orange-400 opacity-50" style="animation-delay: -5s;"></i>
+                    <i class="float-anim fa-solid fa-server absolute top-[45%] right-[5%] text-5xl text-purple-600 opacity-50" style="animation-delay: -3s;"></i>
+                    <i class="float-anim fa-solid fa-database absolute bottom-[15%] right-[8%] text-5xl text-slate-400 opacity-50" style="animation-delay: -0.5s;"></i>
+                    <i class="float-anim fa-brands fa-linux absolute bottom-[40%] left-[5%] text-5xl text-yellow-500 opacity-50" style="animation-delay: -2.5s;"></i>
                 </div>
 
 
@@ -477,8 +488,8 @@
                 </div>
             </section>
 
-            <section id="experience" class="py-20 md:py-32">
-                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-center mb-16 gsap-reveal">Work
+            <section id="experience" class="py-20 md:py-20">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-center mb-8 gsap-reveal">Work
                     Experience</h2>
                 <div class="relative max-w-3xl mx-auto">
                     <div class="absolute left-4 md:left-1/2 top-0 h-full w-0.5 bg-slate-700 -translate-x-1/2"></div>
@@ -506,7 +517,7 @@
                     <div class="experience-item relative md:grid md:grid-cols-2 md:gap-8 mb-12">
                         <div class="md:text-right md:pr-8 relative">
                             <div
-                                class="z-10 absolute -left-1 md:right-[-42px] top-1 bg-indigo-500 rounded-full w-6 h-6 border-4 border-slate-800">
+                                class="z-10 absolute md:right-[-42px] top-1 bg-indigo-500 rounded-full w-6 h-6 border-4 border-slate-800">
                             </div>
                             <div class="glass-effect p-6 rounded-xl gsap-reveal-left">
                                 <p class="text-sm text-slate-400 mb-1">Infrastructure Focus</p>
@@ -545,7 +556,7 @@
             </section>
 
             <section id="projects" class="py-20 md:py-32 overflow-hidden">
-                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-center mb-16 gsap-reveal">Technical Impact</h2>
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-center mb-8 gsap-reveal">Technical Impact</h2>
 
                 <div id="projects-container" class="h-[100vh] relative">
                     <div class="sticky top-0 h-screen flex items-center overflow-hidden">
@@ -1074,15 +1085,15 @@
                 const dt = (now - prevFrameTime) / 1000;
                 prevFrameTime = now;
 
-                backgroundCamera.position.x += (backgroundMouseX - backgroundCamera.position.x) * 0.03;
-                backgroundCamera.position.y += (-backgroundMouseY - backgroundCamera.position.y) * 0.03;
+                backgroundCamera.position.x += (backgroundMouseX - backgroundCamera.position.x) * 0.6;
+                backgroundCamera.position.y += (-backgroundMouseY - backgroundCamera.position.y) * 0.6;
                 backgroundCamera.lookAt(backgroundScene.position);
 
                 // Parallax rotation and subtle twinkle
                 if (starLayers.length) {
-                    starLayers[0].rotation.y = time * 0.20;
-                    starLayers[1].rotation.y = time * 0.10;
-                    starLayers[2].rotation.y = -time * 0.05;
+                    starLayers[0].rotation.y = time * 0.30;
+                    starLayers[1].rotation.y = time * 0.20;
+                    starLayers[2].rotation.y = -time * 0.10;
                     starLayers.forEach(layer => {
                         const mat = layer.material;
                         if (mat.uniforms && mat.uniforms.uTime) {
@@ -1119,7 +1130,7 @@
             // Rotating circular portfolio text
             const rotatingSvg = document.getElementById('rotatingSvg');
             let rotation = 0;
-            const rotationSpeed = 0.6;
+            const rotationSpeed = 0.4;
             function rotateCircle() {
                 rotation += rotationSpeed;
                 if (rotation >= 360) rotation = 0;
