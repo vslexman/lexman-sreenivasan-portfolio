@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: #f9f9fb;
+  color: #1f2933;
+  line-height: 1.6;
+}
+
+/* HERO */
+.hero {
+  padding: 80px 10%;
+  background: linear-gradient(135deg, #1c033c, #371e77);
+  color: white;
+}
+
+.hero h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.hero h2 {
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  max-width: 600px;
+  font-size: 16px;
+}
+
+.hero-links a {
+  color: white;
+  margin-right: 15px;
+  font-size: 20px;
+  transition: 0.3s;
+}
+
+.hero-links a:hover {
+  opacity: 0.7;
+}
+
+/* SECTIONS */
+.section {
+  padding: 60px 10%;
+}
+
+.section.dark {
+  background: #ffffff;
+}
+
+.section h3 {
+  font-size: 28px;
+  margin-bottom: 30px;
+}
+
+/* SKILLS */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 20px;
+}
+
+.skill-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+
+.skill-card i {
+  font-size: 30px;
+  margin-bottom: 10px;
+  color: #371e77;
+}
+
+.skill-card:hover {
+  transform: translateY(-5px);
+}
+
+/* EXPERIENCE */
+.experience-card {
+  background: #f9f9fb;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.experience-card h4 {
+  font-size: 20px;
+}
+
+.exp-time {
+  font-size: 14px;
+  color: #555;
+}
+
+.experience-card ul {
+  margin-top: 15px;
+  padding-left: 20px;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 30px;
+  font-size: 14px;
+  color: #666;
+}

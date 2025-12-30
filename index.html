@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lexman Sreenivasan - Full Stack Engineer</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Animated Cursor */
+        .cursor-dot {
+            display: none;
+        }
+
+        .cursor-outline {
+            display: none;
+        }
+
+        /* ISS image cursor */
+        .cursor-iss {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            transform-origin: 50% 50%;
+            width: 72px;
+            height: auto;
+            z-index: 9999;
+            pointer-events: none;
+            filter: drop-shadow(0 0 4px rgba(173,216,255,0.35)) drop-shadow(0 0 10px rgba(120,180,255,0.25));
+        }
+
+        /* Glassmorphism */
+        .glass-effect {
+            background: rgba(17, 24, 39, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #4f46e5;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+
+        /* GSAP reveal initial states */
+        .gsap-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .gsap-reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .gsap-reveal-right {
+            opacity: 0;
+            transform: translateX(50px);
+        }
+
+        /* Marquee */
+        @keyframes marquee {
+            0% {
+                transform: translateX(0%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .animate-marquee {
+            animation: marquee 35s linear infinite;
+        }
+
+        /* Space callout styling */
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .space-callout {
+            display: inline-block;
+            border-radius: 9999px;
+            background: rgba(17, 24, 39, 0.55);
+            border: 1px solid rgba(99, 102, 241, 0.6);
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.25), 0 0 8px rgba(34, 211, 238, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .space-callout:hover {
+            transform: translateY(-2px);
+            border-color: rgba(129, 140, 248, 0.9);
+            box-shadow: 0 0 28px rgba(129, 140, 248, 0.35), 0 0 12px rgba(167, 139, 250, 0.25);
+        }
+        .space-text {
+            background-image: linear-gradient(90deg, #93c5fd, #e879f9, #93c5fd);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shimmer 4s linear infinite;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-shadow: 0 0 10px rgba(147, 197, 253, 0.15);
+        }
+
+        /* Split Screen Loader */
+        .loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100000;
+            display: flex;
+            pointer-events: none;
+        }
+
+        .loader-half {
+            width: 50%;
+            height: 100%;
+            background: #000;
+            position: relative;
+            transition: transform 1s ease-in-out;
+        }
+
+        .left-half {
+            transform-origin: right center;
+        }
+
+        .right-half {
+            transform-origin: left center;
+        }
+
+        .progress-counter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12rem;
+            font-weight: 200;
+            z-index: 100001;
+            line-height: 1;
+        }
+
+        @media (max-width: 640px) {
+            .progress-counter {
+                font-size: 5rem;
+            }
+        }
+
+        /* Main content hidden until loader completes */
+        .site-content {
+            opacity: 0;
+            transition: opacity 0.6s ease-in;
+        }
+
+        .site-content.visible {
+            opacity: 1;
+        }
+
+        /* Circular Portfolio (dark theme adjusted) */
+        .portfolio-section {
+            padding: 80px 0;
+            background-color: #0f0f10;
+            color: #e2e8f0;
+        }
+
+        .portfolio-header {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-bottom: 64px;
+            gap: 24px;
+        }
+
+        @media (min-width: 1024px) {
+            .portfolio-header {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .portfolio-text {
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .portfolio-text {
+                width: 50%;
+            }
+        }
+
+        .portfolio-subtitle {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .portfolio-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-top: 16px;
+            line-height: 1.2;
+        }
+
+        .portfolio-description {
+            color: #94a3b8;
+            margin-top: 24px;
+            margin-left: 0;
+        }
+
+        .portfolio-circle {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        @media (min-width: 1024px) {
+            .portfolio-circle {
+                width: 41.666667%;
+            }
+        }
+
+        .circle-container {
+            position: relative;
+            width: 256px;
+            height: 256px;
+        }
+
+        .rotating-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .circle-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            top: 0;
+            left: 0;
+        }
+
+        .circle-number {
+            font-size: 36px;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .circle-text {
+            text-align: center;
+            margin-top: 8px;
+            color: #cbd5e1;
+        }
+
+        /* About mobile ordering */
+        @media (max-width: 767px) {
+            #about .order-1 {
+                order: 1 !important;
+            }
+
+            #about .order-2 {
+                order: 2 !important;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased md:px-36">
+
+    <div class="loader-container" id="loader">
+        <div class="loader-half left-half" id="leftHalf"></div>
+        <div class="loader-half right-half" id="rightHalf"></div>
+        <div class="progress-counter" id="counter">0%</div>
+    </div>
+
+    <img id="cursorIss" class="cursor-iss" src="assets/jwt.png" alt="ISS cursor" />
+
+    <div id="threejs-background" class="fixed top-0 left-0 w-full h-full -z-10"></div>
+
+    <div class="relative z-10 site-content" id="siteContent">
+
+        <header id="navbar" class="fixed top-0 left-0 w-full p-4 sm:p-6 z-50 transition-all duration-300">
+            <div class="container mx-auto flex justify-between items-center glass-effect rounded-xl p-4">
+                <a href="#"
+                    class="text-2xl font-bold tracking-tighter text-white hover:text-indigo-400 transition-colors">Lexman Sreenivasan</a>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#hero" class="text-slate-300 hover:text-white transition-colors">Home</a>
+                    <a href="#about" class="text-slate-300 hover:text-white transition-colors">About</a>
+                    <a href="#experience" class="text-slate-300 hover:text-white transition-colors">Experience</a>
+                    <a href="#projects" class="text-slate-300 hover:text-white transition-colors">Impact</a>
+                    <a href="#education" class="text-slate-300 hover:text-white transition-colors">Education</a>
+                    <a href="#contact" class="text-slate-300 hover:text-white transition-colors">Contact</a>
+                </nav>
+                <a href="#contact"
+                    class="hidden md:block bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-105">
+                    Let's Talk
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-2 glass-effect rounded-lg p-4">
+                <a href="#hero" class="block text-slate-300 hover:text-white transition-colors py-2">Home</a>
+                <a href="#about" class="block text-slate-300 hover:text-white transition-colors py-2">About</a>
+                <a href="#experience"
+                    class="block text-slate-300 hover:text-white transition-colors py-2">Experience</a>
+                <a href="#projects" class="block text-slate-300 hover:text-white transition-colors py-2">Impact</a>
+                <a href="#education" class="block text-slate-300 hover:text-white transition-colors py-2">Education</a>
+                <a href="#contact" class="block text-slate-300 hover:text-white transition-colors py-2">Contact</a>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <section id="hero"
+                class="min-h-screen flex flex-col justify-center items-center text-center px-6 md:px-12 lg:px-24 relative overflow-hidden">
+
+                <div class="absolute inset-0 bg-gradient-animate opacity-20 z-0"></div>
+
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-4 relative z-10">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-500">
+                        Hi, I'm Lexman
+                    </span>
+                </h1>
+
+                <h2 class="text-2xl md:text-4xl font-semibold text-gray-300 mb-4 relative z-10">
+                    Full Stack Engineer <br> Backend & Cloud Specialist.
+                </h2>
+
+                <p class="max-w-xl text-md md:text-lg text-gray-400 mb-8 leading-relaxed relative z-10">
+                    Designing scalable, high-performance web services. Expert in GCP, Node.js, and revenue-driven Ad-Tech solutions.
+                </p>
+
+                <a href="assets/Lexman-Sreenivasan-Resume.pdf" download="Lexman-Sreenivasan-Resume.pdf"
+                    class="bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 relative z-10">
+                    Download Resume
+                </a>
+
+                <div class="">
+                    <i class="fa-brands fa-node absolute top-36 left-16 text-5xl text-green-500 z-10 opacity-70"></i>
+                    <i class="fa-brands fa-docker absolute top-36 right-16 text-5xl text-blue-500 z-10 opacity-70"></i>
+                    <i class="fa-brands fa-react absolute bottom-32 left-20 text-5xl text-blue-400 z-10 opacity-70"></i>
+                    <i class="fa-brands fa-google absolute top-1/4 left-1/4 text-5xl text-red-500 z-10 opacity-70"></i>
+                    <i class="fa-brands fa-aws absolute bottom-1/4 right-1/4 text-5xl text-orange-400 z-10 opacity-70"></i>
+                    <i class="fa-solid fa-server absolute top-1/3 right-10 text-5xl text-purple-600 z-10 opacity-70"></i>
+                    <i class="fa-solid fa-database absolute bottom-20 right-10 text-5xl text-slate-400 z-10 opacity-70"></i>
+                    <i class="fa-brands fa-linux absolute bottom-1/3 left-10 text-5xl text-yellow-500 z-10 opacity-70"></i>
+                </div>
+
+
+            </section>
+
+
+            <section id="skills-marquee" class="py-12 overflow-x-hidden">
+                <div
+                    class="relative flex overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_128px,_black_calc(100%-128px),transparent_100%)]">
+                    <div class="flex min-w-full shrink-0 items-center justify-around gap-12 animate-marquee">
+                        <p class="text-4xl font-bold text-slate-500">Node.js</p>
+                        <p class="text-4xl font-bold text-slate-500">Google Cloud Platform</p>
+                        <p class="text-4xl font-bold text-slate-500">Kubernetes</p>
+                        <p class="text-4xl font-bold text-slate-500">NestJS</p>
+                        <p class="text-4xl font-bold text-slate-500">BigQuery</p>
+                        <p class="text-4xl font-bold text-slate-500">Redis</p>
+                        <p class="text-4xl font-bold text-slate-500">TypeScript</p>
+                        <p class="text-4xl font-bold text-slate-500">PostgreSQL</p>
+                    </div>
+                    <div class="flex min-w-full shrink-0 items-center justify-around gap-12 animate-marquee"
+                        aria-hidden="true">
+                        <p class="text-4xl font-bold text-slate-500">Node.js</p>
+                        <p class="text-4xl font-bold text-slate-500">Google Cloud Platform</p>
+                        <p class="text-4xl font-bold text-slate-500">Kubernetes</p>
+                        <p class="text-4xl font-bold text-slate-500">NestJS</p>
+                        <p class="text-4xl font-bold text-slate-500">BigQuery</p>
+                        <p class="text-4xl font-bold text-slate-500">Redis</p>
+                        <p class="text-4xl font-bold text-slate-500">TypeScript</p>
+                        <p class="text-4xl font-bold text-slate-500">PostgreSQL</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="about" class="py-20 md:py-32">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div
+                        class="w-full md:w-[400px] md:h-[400px] ml-6 md:ml-36 flex justify-center items-center rounded-2xl glass-effect p-4 order-1 md:order-1">
+                        <img class="w-full h-full object-cover rounded-2xl"
+                            src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=1000"
+                            alt="Lexman Sreenivasan">
+                    </div>
+                    <div class="order-2 md:order-2 gsap-reveal-right px-8">
+
+                        <h3 class="text-5xl font-semibold mb-4">Scalable Systems Architect</h3>
+                        <p class="text-lg text-slate-400 mb-4">
+                            I am a backend-focused developer with a strong foundation in designing high-throughput web services. 
+                            My expertise lies in optimizing data processing and building cloud-native solutions that drive measurable technical impact.
+                        </p>
+                        <p class="text-lg text-slate-400">
+                            From Ad-Tech ecosystems to distributed architectures, I work with cross-functional teams to deliver reliability and speed.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="portfolio" class="portfolio-section">
+                <div class="container mx-auto px-4">
+                    <div class="portfolio-header">
+                        <div class="portfolio-text">
+                            <span class="portfolio-subtitle">Philosophy</span>
+                            <h3 class="portfolio-title">Efficiency through <br /> Architecture.</h3>
+                            <p class="portfolio-description">
+                                Driven by a strong focus on problem-solving, I believe in building systems that aren't just functional, but scalable and resilient under peak traffic.
+                            </p>
+                        </div>
+                        <div class="portfolio-circle">
+                            <div class="circle-container">
+                                <svg class="rotating-text" viewBox="0 0 220 220" id="rotatingSvg">
+                                    <path id="curve" d="M 110 110, m -90, 0 a 90,90 0 1,1 180,0 a 90,90 0 1,1 -180,0"
+                                        fill="transparent" />
+                                    <text>
+                                        <textPath href="#curve" font-size="16" fill="#cbd5e1">
+                                            — Backend — Cloud — DevOps — Database — API Design — Architecture —
+                                        </textPath>
+                                    </text>
+                                </svg>
+                                <div class="circle-content">
+                                    <span class="circle-number">2+</span>
+                                    <p class="circle-text">
+                                        years of <br /> Professional <br /> Experience
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="experience" class="py-20 md:py-32">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-center mb-16 gsap-reveal">Work
+                    Experience</h2>
+                <div class="relative max-w-3xl mx-auto">
+                    <div class="absolute left-4 md:left-1/2 top-0 h-full w-0.5 bg-slate-700 -translate-x-1/2"></div>
+
+                    <div class="experience-item relative md:grid md:grid-cols-2 md:gap-8 mb-12">
+                        <div></div>
+                        <div class="md:pl-8 relative">
+                            <div
+                                class="z-10 absolute -left-1 md:left-[-42px] top-1 bg-indigo-500 rounded-full w-6 h-6 border-4 border-slate-800">
+                            </div>
+                            <div class="glass-effect p-6 rounded-xl gsap-reveal-right">
+                                <p class="text-sm text-slate-400 mb-1">Jun 2023 - Present</p>
+                                <h3 class="text-xl font-bold text-white mb-2">Software Developer</h3>
+                                <p class="text-indigo-400 font-semibold mb-3">Gizmeon Technologies</p>
+                                <ul class="list-disc list-inside text-slate-300 space-y-2">
+                                    <li>Played a key role in scaling an Ad Exchange platform, contributing to publisher onboarding and backend services for monetization.</li>
+                                    <li>Optimized campaign and RTB servers using Pub/Sub and BigQuery, supporting a 60% revenue increase.</li>
+                                    <li>Enhanced reporting solutions using Node.js, PostgreSQL, and Redis, delivering actionable insights.</li>
+                                    <li>Supported device management for 2,500+ devices using Firebase Cloud Messaging (FCM).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="experience-item relative md:grid md:grid-cols-2 md:gap-8 mb-12">
+                        <div class="md:text-right md:pr-8 relative">
+                            <div
+                                class="z-10 absolute -left-1 md:right-[-42px] top-1 bg-indigo-500 rounded-full w-6 h-6 border-4 border-slate-800">
+                            </div>
+                            <div class="glass-effect p-6 rounded-xl gsap-reveal-left">
+                                <p class="text-sm text-slate-400 mb-1">Infrastructure Focus</p>
+                                <h3 class="text-xl font-bold text-white mb-2">Cloud & DevOps Engineer</h3>
+                                <p class="text-indigo-400 font-semibold mb-3">Infrastructure & Automation</p>
+                                <ul class="list-disc list-inside text-slate-300 space-y-2">
+                                    <li>Automated CI/CD pipelines using Docker, GKE, Cloud Build, and ArgoCD, improving deployment reliability.</li>
+                                    <li>Managed and tuned Redis clusters in Kubernetes for high availability during peak traffic.</li>
+                                    <li>Optimized OTT platform features (Video.js, VMAP ad integrations), boosting ad engagement by 35%.</li>
+                                    <li>Implemented server-side ad caching to reduce latency across placements.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div></div>
+                    </div>
+
+                    <div class="experience-item relative md:grid md:grid-cols-2 md:gap-8 mb-12">
+                        <div></div>
+                        <div class="md:pl-8 relative">
+                            <div
+                                class="z-10 absolute -left-1 md:left-[-42px] top-1 bg-indigo-500 rounded-full w-6 h-6 border-4 border-slate-800">
+                            </div>
+                            <div class="glass-effect p-6 rounded-xl gsap-reveal-right">
+                                <p class="text-sm text-slate-400 mb-1">Data & Systems Focus</p>
+                                <h3 class="text-xl font-bold text-white mb-2">Data & Integration Specialist</h3>
+                                <p class="text-indigo-400 font-semibold mb-3">Gizmeon Technologies</p>
+                                <ul class="list-disc list-inside text-slate-300 space-y-2">
+                                    <li>Designed and maintained backend data pipelines for high-throughput analytics and reporting.</li>
+                                    <li>Integrated Mapbox with real-time overlays to support location-based ad targeting.</li>
+                                    <li>Contributed to monitoring and observability initiatives, improving issue detection and system reliability.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="projects" class="py-20 md:py-32 overflow-hidden">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-center mb-16 gsap-reveal">Technical Impact</h2>
+
+                <div id="projects-container" class="h-[100vh] relative">
+                    <div class="sticky top-0 h-screen flex items-center overflow-hidden">
+                        <div id="projects-track" class="flex gap-8 px-4">
+
+                            <div class="project-card flex-shrink-0 w-[80vw] md:w-[40vw] h-[60vh] glass-effect rounded-2xl p-6">
+                                <div
+                                    class="w-full h-2/3 bg-slate-700 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                                    <img src="assets/ads.jpeg" alt="Ad Exchange Scaling"
+                                        class="object-cover w-full h-full rounded-lg" />
+                                </div>
+                                <h3 class="text-2xl font-bold">Ad Exchange Scaling</h3>
+                                <p class="text-slate-400 mt-2">
+                                    Implemented RTB servers using Pub/Sub and BigQuery, supporting a 60% revenue increase.
+                                </p>
+                            </div>
+
+                            <div class="project-card flex-shrink-0 w-[80vw] md:w-[40vw] h-[60vh] glass-effect rounded-2xl p-6">
+                                <div
+                                    class="w-full h-2/3 bg-slate-700 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                                    <img src="assets/ott.jpg" alt="OTT & Video Integration"
+                                        class="object-cover w-full h-full rounded-lg" />
+                                </div>
+                                <h3 class="text-2xl font-bold">OTT & Video Integration</h3>
+                                <p class="text-slate-400 mt-2">
+                                    Optimized HTML5/Video.js players and VMAP ad integrations, boosting engagement by 35%.
+                                </p>
+                            </div>
+
+                            <div class="project-card flex-shrink-0 w-[80vw] md:w-[40vw] h-[60vh] glass-effect rounded-2xl p-6">
+                                <div
+                                    class="w-full h-2/3 bg-slate-700 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                                    <img src="assets/cloud.png" alt="Ad Exchange Scaling"
+                                        class="object-cover w-full h-full rounded-lg" />
+                                </div>
+                                <h3 class="text-2xl font-bold">Cloud Infrastructure</h3>
+                                <p class="text-slate-400 mt-2">
+                                    CI/CD automation with ArgoCD, Docker, and GKE. Enhanced deployment reliability and speed.
+                                </p>
+                            </div>
+
+                            <div class="project-card flex-shrink-0 w-[80vw] md:w-[40vw] h-[60vh] glass-effect rounded-2xl p-6">
+                                <div
+                                    class="w-full h-2/3 bg-slate-700 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
+                                    <img src="assets/fcm-message.jpg" alt="Device Management"
+                                        class="object-cover w-full h-full rounded-lg" />
+                                </div>
+                                <h3 class="text-2xl font-bold">Device Management</h3>
+                                <p class="text-slate-400 mt-2">
+                                    Monitoring workflows for 2,500+ devices using Firebase Cloud Messaging (FCM).
+                                </p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="education" class="py-20 md:py-32">
+                <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-center mb-16 gsap-reveal">Education & Certs</h2>
+                <div class="max-w-3xl mx-auto space-y-8">
+                    <div class="education-item glass-effect p-6 rounded-xl flex items-start space-x-6 gsap-reveal">
+                        <div class="bg-indigo-600/20 text-indigo-400 p-4 rounded-lg">
+                            <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400">2019 - 2022</p>
+                            <h3 class="text-xl font-bold text-white">Bachelor's Degree in Computer Applications</h3>
+                            <p class="text-indigo-400 font-semibold">College of Applied Science, Adoor, India </p>
+                        </div>
+                    </div>
+                    <div class="education-item glass-effect p-6 rounded-xl flex items-start space-x-6 gsap-reveal">
+                        <div class="bg-purple-600/20 text-purple-400 p-4 rounded-lg">
+                            <i class="fa-solid fa-language text-2xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-slate-400">Language Proficiency</p>
+                            <h3 class="text-xl font-bold text-white">English: C1 (CEFR)</h3>
+                            <p class="text-purple-400 font-semibold">IELTS General</p>
+                            <a href="assets/IELTS-CERTIFICATE.pdf" download="IELTS-CERTIFICATE.pdf" class="text-sm text-cyan-400 hover:underline mt-2 inline-block">
+                                <i class="fa-solid fa-download mr-1"></i>Download Certificate
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="py-20 md:py-32 text-center">
+                <div class="gsap-reveal">
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tighter mb-4">Let's Build the Future</h2>
+                    <p class="max-w-2xl mx-auto text-lg text-slate-400 mb-8">
+                        Based in Mannheim, Germany. Open to discussing backend engineering roles and cloud architecture opportunities.
+                    </p>
+                    <a href="mailto:vslexman@gmail.com"
+                        class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-500 hover:from-indigo-300 hover:to-purple-400 transition-all duration-300">
+                        vslexman@gmail.com
+                    </a>
+                    <p class="mt-4 text-slate-500">+49 15511046687</p>
+                    <div class="mt-8 flex justify-center space-x-6">
+                        <a href="https://www.linkedin.com/in/vslexman/" target="_blank" rel="noopener noreferrer" class="text-slate-400 hover:text-white transition-colors">
+                            <i class="fa-brands fa-linkedin text-3xl"></i>
+                        </a>
+                    </div>
+                    <div class="space-callout mt-12">
+                        <p class="space-text flex items-center justify-center gap-3 px-6 py-3">
+                            <i class="fa-solid fa-rocket text-cyan-300 animate-bounce"></i>
+                            Well, I am a space enthusiast too!
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="py-8">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center text-slate-500">
+                <p>&copy; 2025 Lexman Sreenivasan. All rights reserved.</p>
+                <p class="text-sm mt-2">Full Stack Engineer | Backend & Cloud</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/postprocessing/RenderPass.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/controls/OrbitControls.js"></script>
+
+    <script>
+        // Split-screen loader logic
+        document.addEventListener('DOMContentLoaded', function () {
+            const loader = document.getElementById('loader');
+            const leftHalf = document.getElementById('leftHalf');
+            const rightHalf = document.getElementById('rightHalf');
+            const counter = document.getElementById('counter');
+            const siteContent = document.getElementById('siteContent');
+
+            let progress = 0;
+            const loadInterval = setInterval(() => {
+                progress += 1;
+                counter.textContent = `${progress}%`;
+
+                if (progress < 100) {
+                    const scale = 1 + (progress / 150);
+                    leftHalf.style.transform = `scaleX(${scale})`;
+                    rightHalf.style.transform = `scaleX(${scale})`;
+                }
+
+                if (progress >= 100) {
+                    clearInterval(loadInterval);
+                    leftHalf.style.transform = 'translateX(-100%)';
+                    rightHalf.style.transform = 'translateX(100%)';
+
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        siteContent.classList.add('visible');
+                    }, 800);
+                }
+            }, 10); // slightly faster
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // GSAP
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Navbar scroll effect
+            gsap.to("#navbar", {
+                scrollTrigger: { trigger: "body", start: "top top", end: "+=100", scrub: 1 },
+                padding: "1rem 1.5rem",
+                backgroundColor: "rgba(17, 24, 39, 0.7)",
+            });
+
+            // Hero entrance
+            const heroTl = gsap.timeline({ delay: 0.2 });
+            heroTl.from(".hero-text", { opacity: 0, y: 50, stagger: 0.2, duration: 1, ease: "power3.out" })
+                .from(".hero-subtext", { opacity: 0, y: 30, duration: 0.8, ease: "power3.out" }, "-=0.6")
+                .from(".hero-cta", { opacity: 0, scale: 0.8, duration: 0.8, ease: "back.out(1.7)" }, "-=0.5");
+
+            // General reveal
+            document.querySelectorAll('.gsap-reveal').forEach(el => {
+                gsap.fromTo(el, { opacity: 0, y: 50 }, {
+                    opacity: 1, y: 0, duration: 1, ease: "power3.out",
+                    scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" }
+                });
+            });
+            document.querySelectorAll('.gsap-reveal-left').forEach(el => {
+                gsap.fromTo(el, { opacity: 0, x: -50 }, {
+                    opacity: 1, x: 0, duration: 1, ease: "power3.out",
+                    scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" }
+                });
+            });
+            document.querySelectorAll('.gsap-reveal-right').forEach(el => {
+                gsap.fromTo(el, { opacity: 0, x: 50 }, {
+                    opacity: 1, x: 0, duration: 1, ease: "power3.out",
+                    scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" }
+                });
+            });
+
+            // Projects horizontal scroll
+            const projectsTrack = document.querySelector("#projects-track");
+            const projectsContainer = document.querySelector("#projects-container");
+            if (projectsTrack && projectsContainer) {
+                gsap.to(projectsTrack, {
+                    x: () => -(projectsTrack.scrollWidth - projectsTrack.parentElement.offsetWidth),
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: projectsContainer,
+                        start: "top top",
+                        end: () => "+=" + (projectsTrack.scrollWidth - projectsTrack.parentElement.offsetWidth),
+                        pin: true,
+                        scrub: 1,
+                        invalidateOnRefresh: true
+                    }
+                });
+            }
+
+            // Custom cursor: ISS image following mouse with rotation and hover scale
+            const cursorIss = document.getElementById('cursorIss');
+            let lastX = window.innerWidth / 2, lastY = window.innerHeight / 2;
+            gsap.set(cursorIss, { xPercent: -50, yPercent: -50, scale: 1 });
+            window.addEventListener('mousemove', e => {
+                const dx = e.clientX - lastX;
+                const dy = e.clientY - lastY;
+                const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
+                gsap.to(cursorIss, { duration: 0.15, x: e.clientX, y: e.clientY, rotation: angleDeg, ease: "power2.out" });
+                lastX = e.clientX; lastY = e.clientY;
+            });
+            document.querySelectorAll('a, button').forEach(el => {
+                el.addEventListener('mouseenter', () => gsap.to(cursorIss, { scale: 1.15, duration: 0.2 }));
+                el.addEventListener('mouseleave', () => gsap.to(cursorIss, { scale: 1.0, duration: 0.2 }));
+            });
+
+            // Three.js starry galaxies background
+            let backgroundScene,
+                backgroundCamera,
+                backgroundRenderer,
+                composer,
+                bloomPass,
+                starLayers = [],
+                galaxies = [],
+                backgroundMouseX = 0,
+                backgroundMouseY = 0;
+
+            const backgroundContainer = document.getElementById('threejs-background');
+
+            function createStarTexture(size = 64) {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                const g = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
+                g.addColorStop(0.0, 'rgba(255,255,255,1)');
+                g.addColorStop(0.2, 'rgba(255,255,255,0.9)');
+                g.addColorStop(0.6, 'rgba(255,255,255,0.25)');
+                g.addColorStop(1.0, 'rgba(255,255,255,0.0)');
+                ctx.fillStyle = g;
+                ctx.beginPath();
+                ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+                ctx.fill();
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.needsUpdate = true;
+                return texture;
+            }
+
+            function createStarField(count, baseSize, colorHex, spread) {
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array(count * 3);
+                const sizes = new Float32Array(count);
+                const blinks = new Float32Array(count);
+                for (let i = 0; i < count; i++) {
+                    positions[i * 3] = (Math.random() - 0.5) * spread;
+                    positions[i * 3 + 1] = (Math.random() - 0.5) * spread;
+                    positions[i * 3 + 2] = (Math.random() - 0.5) * spread;
+                    sizes[i] = 0.8 + Math.random() * 1.8; // per-star size multiplier
+                    blinks[i] = Math.random(); // random blink phase/speed
+                }
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+                geometry.setAttribute('aBlink', new THREE.BufferAttribute(blinks, 1));
+
+                const color = new THREE.Color(colorHex);
+                const material = new THREE.ShaderMaterial({
+                    transparent: true,
+                    depthWrite: false,
+                    blending: THREE.AdditiveBlending,
+                    uniforms: {
+                        uTime: { value: 0 },
+                        uColor: { value: new THREE.Vector3(color.r, color.g, color.b) },
+                        uBaseAlpha: { value: 1.0 },
+                        uBaseSize: { value: baseSize }
+                    },
+                    vertexShader: `
+                        uniform float uTime;
+                        uniform float uBaseSize;
+                        attribute float aSize;
+                        attribute float aBlink;
+                        varying float vBlink;
+                        void main() {
+                            vBlink = aBlink;
+                            vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                            gl_Position = projectionMatrix * mvPosition;
+                            float size = uBaseSize * aSize;
+                            // mild attenuation with distance for depth feel
+                            gl_PointSize = size * (300.0 / -mvPosition.z);
+                        }
+                    `,
+                    fragmentShader: `
+                        precision mediump float;
+                        uniform float uTime;
+                        uniform vec3 uColor;
+                        uniform float uBaseAlpha;
+                        varying float vBlink;
+                        void main() {
+                            // Circular mask using gl_PointCoord
+                            vec2 uv = gl_PointCoord - vec2(0.5);
+                            float dist = length(uv);
+                            float mask = smoothstep(0.5, 0.0, dist);
+
+                            // Random-phase twinkle per star
+                            float wave = 0.5 + 0.5 * sin(uTime * (2.0 + vBlink * 4.0) + vBlink * 10.0);
+                            float sparkle = smoothstep(0.4, 1.0, wave);
+                            float alpha = uBaseAlpha * mask * (0.6 + 0.6 * sparkle);
+                            gl_FragColor = vec4(uColor, alpha);
+                        }
+                    `
+                });
+                const points = new THREE.Points(geometry, material);
+                backgroundScene.add(points);
+                return points;
+            }
+
+            function createGalaxy(size, coreColor, position) {
+                const canvas = document.createElement('canvas');
+                const s = 512;
+                canvas.width = s;
+                canvas.height = s;
+                const ctx = canvas.getContext('2d');
+                const grad = ctx.createRadialGradient(s / 2, s / 2, 0, s / 2, s / 2, s / 2);
+                grad.addColorStop(0.0, coreColor);
+                grad.addColorStop(0.3, 'rgba(160,160,255,0.65)');
+                grad.addColorStop(0.6, 'rgba(90,90,180,0.25)');
+                grad.addColorStop(1.0, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, s, s);
+                const tex = new THREE.CanvasTexture(canvas);
+                const material = new THREE.SpriteMaterial({
+                    map: tex,
+                    color: 0xffffff,
+                    transparent: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false
+                });
+                const sprite = new THREE.Sprite(material);
+                sprite.scale.set(size, size, 1);
+                sprite.position.set(position.x, position.y, position.z);
+                backgroundScene.add(sprite);
+                return sprite;
+            }
+
+            // Shooting star helpers
+            let shootingStars = [];
+            let nextShootingStarAt = 0;
+            function createShootingStarTexture() {
+                const w = 256, h = 64;
+                const canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                const ctx = canvas.getContext('2d');
+                const grad = ctx.createLinearGradient(0, h / 2, w, h / 2);
+                grad.addColorStop(0.00, 'rgba(255,255,255,1)');
+                grad.addColorStop(0.15, 'rgba(255,255,255,0.9)');
+                grad.addColorStop(0.40, 'rgba(180,200,255,0.5)');
+                grad.addColorStop(1.00, 'rgba(0,0,0,0)');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, w, h);
+                // bright head
+                ctx.beginPath();
+                ctx.arc(28, h / 2, 14, 0, Math.PI * 2);
+                const head = ctx.createRadialGradient(28, h / 2, 0, 28, h / 2, 16);
+                head.addColorStop(0, 'rgba(255,255,255,1)');
+                head.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = head;
+                ctx.fill();
+                const texture = new THREE.CanvasTexture(canvas);
+                texture.needsUpdate = true;
+                return texture;
+            }
+
+            function spawnShootingStar() {
+                const tex = createShootingStarTexture();
+                const mat = new THREE.SpriteMaterial({
+                    map: tex,
+                    transparent: true,
+                    blending: THREE.AdditiveBlending,
+                    color: 0xffffff,
+                    depthWrite: false
+                });
+                const sprite = new THREE.Sprite(mat);
+                sprite.scale.set(320, 80, 1);
+
+                // Random edge spawn and diagonal trajectory
+                const edge = Math.floor(Math.random() * 4);
+                const z = -600 - Math.random() * 400;
+                let pos = new THREE.Vector3();
+                let vel = new THREE.Vector3();
+                const speed = 400 + Math.random() * 250; // px/sec
+                switch (edge) {
+                    case 0: // left -> right-down
+                        pos.set(-window.innerWidth * 0.6, Math.random() * window.innerHeight - window.innerHeight * 0.5, z);
+                        vel.set(1, 0.3 + Math.random() * 0.4, 0).normalize().multiplyScalar(speed);
+                        break;
+                    case 1: // right -> left-down
+                        pos.set(window.innerWidth * 0.6, Math.random() * window.innerHeight - window.innerHeight * 0.5, z);
+                        vel.set(-1, 0.3 + Math.random() * 0.4, 0).normalize().multiplyScalar(speed);
+                        break;
+                    case 2: // top -> right
+                        pos.set(Math.random() * window.innerWidth - window.innerWidth * 0.5, window.innerHeight * 0.6, z);
+                        vel.set(0.9, -0.2 - Math.random() * 0.4, 0).normalize().multiplyScalar(speed);
+                        break;
+                    default: // bottom -> left
+                        pos.set(Math.random() * window.innerWidth - window.innerWidth * 0.5, -window.innerHeight * 0.6, z);
+                        vel.set(-0.9, 0.2 + Math.random() * 0.4, 0).normalize().multiplyScalar(speed);
+                        break;
+                }
+
+                const angle = Math.atan2(vel.y, vel.x);
+                sprite.material.rotation = angle;
+                sprite.position.copy(pos);
+                backgroundScene.add(sprite);
+
+                shootingStars.push({ sprite, vel, life: 0, maxLife: 2.8 + Math.random() * 1.2 });
+            }
+
+            function updateShootingStars(dt) {
+                for (let i = shootingStars.length - 1; i >= 0; i--) {
+                    const s = shootingStars[i];
+                    s.life += dt;
+                    s.sprite.position.x += s.vel.x * dt;
+                    s.sprite.position.y += s.vel.y * dt;
+                    const fade = Math.max(0.0, 1.0 - s.life / s.maxLife);
+                    s.sprite.material.opacity = 0.9 * fade;
+                    s.sprite.scale.setScalar(1.0 + (1.0 - fade) * 0.5);
+                    if (s.life > s.maxLife) {
+                        backgroundScene.remove(s.sprite);
+                        s.sprite.material.map.dispose();
+                        s.sprite.material.dispose();
+                        shootingStars.splice(i, 1);
+                    }
+                }
+            }
+
+            function initThreeJSBackground() {
+                backgroundScene = new THREE.Scene();
+                backgroundCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
+                backgroundCamera.position.z = 900;
+
+                // Stars: multiple parallax layers with bigger sizes and random blinking
+                starLayers.push(createStarField(2200, 4.0, 0xffffff, 2400));
+                starLayers.push(createStarField(1600, 4.8, 0xa7b4ff, 2000));
+                starLayers.push(createStarField(1200, 5.6, 0x8a63ff, 1600));
+
+                // Galaxies / nebula glow sprites (pushed to the sides)
+                galaxies.push(createGalaxy(800, 'rgba(170,140,255,0.95)', new THREE.Vector3(-920, 220, -800)));
+                galaxies.push(createGalaxy(700, 'rgba(130,180,255,0.95)', new THREE.Vector3(1020, -320, -750)));
+                galaxies.push(createGalaxy(600, 'rgba(255,160,200,0.85)', new THREE.Vector3(-700, -450, -650)));
+
+                backgroundRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                backgroundRenderer.setSize(window.innerWidth, window.innerHeight);
+                backgroundRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                // Use a very dark clear color (opaque) to make stars pop
+                backgroundRenderer.setClearColor(0x000011, 1);
+                backgroundContainer.appendChild(backgroundRenderer.domElement);
+
+                // Post-processing bloom (safe fallback if examples not loaded)
+                try {
+                    composer = new THREE.EffectComposer(backgroundRenderer);
+                    const renderPass = new THREE.RenderPass(backgroundScene, backgroundCamera);
+                    composer.addPass(renderPass);
+                    bloomPass = new THREE.UnrealBloomPass(
+                        new THREE.Vector2(window.innerWidth, window.innerHeight),
+                        0.8, // strength
+                        0.6, // radius
+                        0.2  // threshold
+                    );
+                    composer.addPass(bloomPass);
+                } catch (e) {
+                    composer = null;
+                    console.warn('Postprocessing not available, rendering without bloom.', e);
+                }
+
+                document.addEventListener('mousemove', onDocumentMouseMove, false);
+                window.addEventListener('resize', onWindowResize, false);
+
+                // schedule first shooting star
+                nextShootingStarAt = performance.now() + (4000 + Math.random() * 6000);
+            }
+
+            function onWindowResize() {
+                backgroundCamera.aspect = window.innerWidth / window.innerHeight;
+                backgroundCamera.updateProjectionMatrix();
+                backgroundRenderer.setSize(window.innerWidth, window.innerHeight);
+                if (composer) {
+                    composer.setSize(window.innerWidth, window.innerHeight);
+                    if (bloomPass && bloomPass.resolution) {
+                        bloomPass.resolution.set(window.innerWidth, window.innerHeight);
+                    }
+                }
+            }
+
+            function onDocumentMouseMove(event) {
+                const halfX = window.innerWidth / 2;
+                const halfY = window.innerHeight / 2;
+                backgroundMouseX = (event.clientX - halfX) / 20;
+                backgroundMouseY = (event.clientY - halfY) / 20;
+            }
+
+            let prevFrameTime = performance.now();
+            function animateThreeJSBackground() {
+                requestAnimationFrame(animateThreeJSBackground);
+                const now = performance.now();
+                const time = now * 0.0001;
+                const dt = (now - prevFrameTime) / 1000;
+                prevFrameTime = now;
+
+                backgroundCamera.position.x += (backgroundMouseX - backgroundCamera.position.x) * 0.03;
+                backgroundCamera.position.y += (-backgroundMouseY - backgroundCamera.position.y) * 0.03;
+                backgroundCamera.lookAt(backgroundScene.position);
+
+                // Parallax rotation and subtle twinkle
+                if (starLayers.length) {
+                    starLayers[0].rotation.y = time * 0.20;
+                    starLayers[1].rotation.y = time * 0.10;
+                    starLayers[2].rotation.y = -time * 0.05;
+                    starLayers.forEach(layer => {
+                        const mat = layer.material;
+                        if (mat.uniforms && mat.uniforms.uTime) {
+                            mat.uniforms.uTime.value = performance.now() * 0.001;
+                        }
+                    });
+                }
+
+                // Shooting star spawn & update
+                if (now > nextShootingStarAt) {
+                    spawnShootingStar();
+                    nextShootingStarAt = now + (5000 + Math.random() * 8000);
+                }
+                updateShootingStars(dt);
+
+                if (composer) {
+                    composer.render();
+                } else {
+                    backgroundRenderer.render(backgroundScene, backgroundCamera);
+                }
+            }
+
+            initThreeJSBackground();
+            animateThreeJSBackground();
+
+            // Mobile menu
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                document.body.style.overflow = mobileMenu.classList.contains('hidden') ? '' : 'hidden';
+            });
+
+            // Rotating circular portfolio text
+            const rotatingSvg = document.getElementById('rotatingSvg');
+            let rotation = 0;
+            const rotationSpeed = 0.6;
+            function rotateCircle() {
+                rotation += rotationSpeed;
+                if (rotation >= 360) rotation = 0;
+                rotatingSvg.style.transform = `rotate(${rotation}deg)`;
+                requestAnimationFrame(rotateCircle);
+            }
+            rotateCircle();
+        });
+    </script>
+</body>
+
+</html>
