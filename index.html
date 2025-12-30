@@ -782,13 +782,54 @@
             const cursorIss = document.getElementById('cursorIss');
             let lastX = window.innerWidth / 2, lastY = window.innerHeight / 2;
             gsap.set(cursorIss, { xPercent: -50, yPercent: -50, scale: 1 });
+
+
+
+            // Ensure pointer-events for correct hit testing
+            cursorIss.style.pointerEvents = 'none';
+            document.querySelectorAll('button').forEach(btn => btn.style.pointerEvents = 'auto');
+
             window.addEventListener('mousemove', e => {
                 const dx = e.clientX - lastX;
                 const dy = e.clientY - lastY;
                 const angleDeg = Math.atan2(dy, dx) * 180 / Math.PI;
                 gsap.to(cursorIss, { duration: 0.15, x: e.clientX, y: e.clientY, rotation: angleDeg, ease: "power2.out" });
                 lastX = e.clientX; lastY = e.clientY;
+
+                // Use elementFromPoint to check if directly over a button
+                const el = document.elementFromPoint(e.clientX, e.clientY);
+                // Check for button, button-like <a>, LinkedIn button, or navbar
+                const isButtonLikeA = (node) => node && node.tagName === 'A' && (
+                    node.classList.contains('bg-gradient-to-r') ||
+                    node.classList.contains('bg-indigo-600') ||
+                    node.classList.contains('rounded-full') ||
+                    node.classList.contains('rounded-lg')
+                );
+                const isLinkedIn = (node) => node && node.tagName === 'A' && node.href && node.href.includes('linkedin.com');
+                const isNavbar = (node) => node && node.id === 'navbar';
+
+                if (
+                    (el && (el.tagName === 'BUTTON' || el.closest('button'))) ||
+                    isButtonLikeA(el) ||
+                    (el && el.closest && isButtonLikeA(el.closest('a')))
+                    || isLinkedIn(el) || (el && el.closest && isLinkedIn(el.closest('a')))
+                    || isNavbar(el) || (el && el.closest && isNavbar(el.closest('#navbar')))
+                ) {
+                    cursorIss.style.opacity = '0';
+                } else {
+                    // Hide if near any button, button-like <a>, LinkedIn, or navbar (within 60px)
+                    let hide = false;
+                    document.querySelectorAll('button, a.bg-gradient-to-r, a.bg-indigo-600, a.rounded-full, a.rounded-lg, a[href*="linkedin.com"], #navbar').forEach(btn => {
+                        const rect = btn.getBoundingClientRect();
+                        const bx = rect.left + rect.width / 2;
+                        const by = rect.top + rect.height / 2;
+                        const dist = Math.sqrt((e.clientX - bx) ** 2 + (e.clientY - by) ** 2);
+                        if (dist < 60) hide = true;
+                    });
+                    cursorIss.style.opacity = hide ? '0' : '1';
+                }
             });
+
             document.querySelectorAll('a, button').forEach(el => {
                 el.addEventListener('mouseenter', () => gsap.to(cursorIss, { scale: 1.15, duration: 0.2 }));
                 el.addEventListener('mouseleave', () => gsap.to(cursorIss, { scale: 1.0, duration: 0.2 }));
